@@ -1,0 +1,26 @@
+<div class="attractor-detail">
+
+
+  <form class="example-form" >
+    <h2>Attractor</h2>
+
+    <mat-form-field>
+      <mat-label>x</mat-label>
+      <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.x"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>y</mat-label>
+      <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.y"/>
+    </mat-form-field>
+
+    <div>
+      <mat-form-field>
+        <mat-label>mass</mat-label>
+        <input name="mass" [errorStateMatcher]="matcher" matInput [(ngModel)]="attractor.massExpression" mathValidator="i"/>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</div>

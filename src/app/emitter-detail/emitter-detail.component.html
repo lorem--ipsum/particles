@@ -1,0 +1,39 @@
+<div class="emitter-detail">
+
+
+  <form class="example-form" >
+    <h2>Emitter</h2>
+
+    <mat-form-field>
+      <mat-label>x</mat-label>
+      <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.x"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>y</mat-label>
+      <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.y"/>
+    </mat-form-field>
+
+    <div>
+      <mat-form-field>
+        <mat-label>angle</mat-label>
+        <input name="angleExpression" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.angleExpression" mathValidator="i"/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>spread</mat-label>
+        <input name="spread" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.spreadExpression" mathValidator="i"/>
+      </mat-form-field>
+    </div>
+
+
+    <div>
+      <mat-form-field>
+        <mat-label>initial velocity</mat-label>
+        <input name="velocity" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.velocityExpression" mathValidator="i"/>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</div>

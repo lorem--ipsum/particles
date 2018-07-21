@@ -1,9 +1,15 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div>
+<div class="app">
   <app-stage
     [width]="500"
     [height]="500"
+
     [emitters]="emitters"
     [attractors]="attractors"
+
+    (attractorClick)="onAttractorClick($event)"
+    (emitterClick)="onEmitterClick($event)">
   ></app-stage>
+
+  <app-emitter-detail *ngIf="selectedEmitter" [emitter]="selectedEmitter"></app-emitter-detail>
+  <app-attractor-detail *ngIf="selectedAttractor" [attractor]="selectedAttractor"></app-attractor-detail>
 </div>

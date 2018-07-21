@@ -5,7 +5,7 @@ import { Emitter, Vector, Attractor } from '../models/index';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 
 export class AppComponent implements OnInit {
@@ -17,6 +17,9 @@ export class AppComponent implements OnInit {
   counter = 0;
   zone: NgZone;
 
+  selectedEmitter: Emitter;
+  selectedAttractor: Attractor;
+
   constructor(zone: NgZone) {
     this.zone = zone;
   }
@@ -24,19 +27,20 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.emitters = [
       new Emitter({
-        position: new Vector({x: 250, y: 250}),
-        spread: Math.PI / 6,
+        position: new Vector({x: 150, y: 250}),
+        spread: Math.PI / 2,
         angle: 0
       })
     ];
 
     this.attractors = [
       new Attractor({
-        mass: 10,
+        mass: 'sin(i / 20) * 20',
         position: new Vector({x: 350, y: 250}),
-        pulseFrequency: 10
-      }),
+      })
     ];
+
+    this.selectedAttractor = this.attractors[0];
 
     requestAnimationFrame(this.startUpdate);
   }
@@ -54,7 +58,17 @@ export class AppComponent implements OnInit {
     this.attractors.forEach(a => a.update(this.counter));
     this.attractors = this.attractors.concat();
 
-    this.emitters.forEach(e => e.update(10, this.attractors));
+    this.emitters.forEach(e => e.update(this.counter, 10, this.attractors));
     this.emitters = this.emitters.concat();
+  }
+
+  onAttractorClick(attractor: Attractor) {
+    this.selectedAttractor = attractor;
+    this.selectedEmitter = undefined;
+  }
+
+  onEmitterClick(emitter: Emitter) {
+    this.selectedEmitter = emitter;
+    this.selectedAttractor = undefined;
   }
 }

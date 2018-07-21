@@ -1,3 +1,5 @@
+import * as math from 'mathjs';
+
 import { Vector } from './vector';
 import { Particle } from './particle';
 import { Attractor } from './attractor';
@@ -5,20 +7,68 @@ import { Attractor } from './attractor';
 import nanOr from '../utils/nan-or';
 
 export class Emitter {
-
   public position: Vector;
-  public radius: number;
+  private _angleExpression: string;
+  private _spreadExpression: string;
+  private _velocityExpression: string;
+
+  public pouet: string;
+
+  public time = 0;
+
   public particles: Particle[];
-  public spread: number;
-  public angle: number;
-  public initialVelocity: number;
 
   constructor(params?: any) {
     this.position = params.position || new Vector();
     this.particles = [];
-    this.spread = nanOr(params.spread, Math.PI / 4);
-    this.angle = nanOr(params.angle, 0);
-    this.initialVelocity = nanOr(params.initialVelocity, 20);
+    this.angleExpression = params.angle;
+    this.spreadExpression = params.spread;
+    this._velocityExpression = params.initialVelocity || '20';
+  }
+
+  get angle(): number {
+    return math.parse(this.angleExpression).eval({i: this.time});
+  }
+
+  public get angleExpression(): string {
+    return this._angleExpression;
+  }
+
+  public set angleExpression(v: string) {
+    try {
+      math.parse(v).eval({i: 0});
+      this._angleExpression = v;
+    } catch (e) {}
+  }
+
+  get spread(): number {
+    return math.parse(this.spreadExpression).eval({i: this.time});
+  }
+
+  public get spreadExpression(): string {
+    return this._spreadExpression;
+  }
+
+  public set spreadExpression(v: string) {
+    try {
+      math.parse(v).eval({i: 0});
+      this._spreadExpression = v;
+    } catch (e) {}
+  }
+
+  get initialVelocity(): number {
+    return math.parse(this.velocityExpression).eval({i: this.time});
+  }
+
+  public get velocityExpression(): string {
+    return this._velocityExpression;
+  }
+
+  public set velocityExpression(v: string) {
+    try {
+      math.parse(v).eval({i: 0});
+      this._velocityExpression = v;
+    } catch (e) {}
   }
 
   getNewParticle(index: number, count: number) {
@@ -37,7 +87,9 @@ export class Emitter {
     return Vector.fromPolar({r: this.initialVelocity, theta: this.angle});
   }
 
-  update = (newParticlesCount = 1, attractors: Attractor[] = []) => {
+  update = (time: number, newParticlesCount = 1, attractors: Attractor[] = []) => {
+    this.time = time;
+
     for (let i = 0; i < newParticlesCount; i++) {
       this.particles.push(this.getNewParticle(i, newParticlesCount));
     }

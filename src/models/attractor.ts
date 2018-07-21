@@ -1,3 +1,5 @@
+import * as math from 'mathjs';
+
 import { Vector } from './vector';
 import { Particle } from './particle';
 
@@ -8,25 +10,35 @@ const G = 0.1;
 export class Attractor {
   public position: Vector;
 
-  public pulseFrequency = 0;
+  private _massExpression: string;
+  private _parsedMass: math.MathNode;
 
-  private _originalMass = 1;
-  private _mass: number;
+  public time = 0;
 
   constructor(params: any) {
     this.position = params.position || new Vector();
-    this.pulseFrequency = nanOr(params.pulseFrequency, 0);
-    this._originalMass = nanOr(params.mass, 1);
-    this._mass = this._originalMass;
+    this.massExpression = params.mass;
+  }
+
+  get mass(): number {
+    return this._parsedMass.eval({i: this.time});
+  }
+
+  public get massExpression(): string {
+    return this._massExpression;
+  }
+
+  public set massExpression(v: string) {
+    try {
+      const p = math.parse(v);
+      p.eval({i: 0});
+      this._massExpression = v;
+      this._parsedMass = p;
+    } catch (e) {}
   }
 
   update(index: number) {
-    if (this.pulseFrequency === 0) return;
-    this._mass = Math.sin(this.pulseFrequency / 100 * index) * this._originalMass;
-  }
-
-  get mass() {
-    return this._mass;
+    this.time = index;
   }
 
   getAttractionForce(p: Particle): Vector {
@@ -36,6 +48,11 @@ export class Attractor {
       ;
 
     const distance = force.getMagnitude();
+
+    if (distance < this.mass) {
+      p.kill();
+      return new Vector({x: 0, y: 0});
+    }
 
     const strength = (G * this.mass * p.mass) / (distance * distance);
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Emitter, Particle, Attractor } from '../../models/index';
 
 @Component({
@@ -15,6 +15,9 @@ export class StageComponent implements OnInit, OnChanges {
   @Input() attractors: Attractor[] = [];
 
   @ViewChild('myCanvas') canvasRef: ElementRef;
+
+  @Output() attractorClick = new EventEmitter<Attractor>();
+  @Output() emitterClick = new EventEmitter<Emitter>();
 
   constructor() { }
 
@@ -39,5 +42,4 @@ export class StageComponent implements OnInit, OnChanges {
     this.emitters.forEach(emitter => emitter.drawOn(ctx));
     this.attractors.forEach(attractor => attractor.drawOn(ctx));
   }
-
 }

@@ -64,8 +64,8 @@ export class EmitterRendererComponent implements OnInit, OnChanges {
 
       const { r, theta } = newPoint.subtract(this.emitter.position).toPolar();
 
-      this.emitter.angle = theta;
-      this.emitter.initialVelocity = r - KNOB_PADDING;
+      this.emitter.angleExpression = '' + theta;
+      this.emitter.velocityExpression = '' + (r - KNOB_PADDING);
     }
   }
 

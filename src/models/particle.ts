@@ -3,7 +3,7 @@ import { Attractor } from './attractor';
 
 import nanOr from '../utils/nan-or';
 
-const LIFE_SPAN = 200;
+const LIFE_SPAN = 500;
 
 export class Particle {
   public position: Vector;
@@ -27,14 +27,16 @@ export class Particle {
     this.velocity.add(this.acceleration);
 
     attractors.forEach(attractor => {
-      const f = attractor.getAttractionForce(this);
-      // console.log(f)
-      this.acceleration.add(f);
+      this.acceleration.add(attractor.getAttractionForce(this));
     });
   }
 
+  kill() {
+    this.lifeSpan = 0;
+  }
+
   isDead() {
-    return this.lifeSpan <= 0;
+    return this.lifeSpan <= 0 || this.position.x < 0 || this.position.y < 0;
   }
 
   getOpacity() {
