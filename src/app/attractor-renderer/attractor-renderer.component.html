@@ -1,0 +1,19 @@
+<svg:g class="attractor" [ngClass]="{'positive': attractor.mass > 0, 'negative': attractor.mass < 0}">
+
+  <svg:circle
+    class="background"
+    [attr.cx]="attractor.position.x"
+    [attr.cy]="attractor.position.y"
+    [attr.r]="getMass()"
+  />
+
+  <svg:g class="event-target-container" (mousedown)="onMouseDown($event)" (click)="onClick()">
+    <svg:circle
+      class="event-target"
+      [attr.cx]="attractor.position.x"
+      [attr.cy]="attractor.position.y"
+      [attr.r]="20"
+    />
+  </svg:g>
+
+</svg:g>

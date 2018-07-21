@@ -2,5 +2,6 @@
   <canvas #myCanvas></canvas>
   <svg [attr.width]="width" [attr.height]="height">
     <g app-emitter-renderer *ngFor="let emitter of emitters" [emitter]="emitter"></g>
+    <g app-attractor-renderer *ngFor="let attractor of attractors" [attractor]="attractor"></g>
   </svg>
 </div>

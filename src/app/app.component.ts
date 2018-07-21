@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   emitters: Emitter[] = [];
   attractors: Attractor[] = [];
   intervalId = undefined;
-  leaps = 1;
+  leaps = 2;
   counter = 0;
   zone: NgZone;
 
@@ -31,7 +31,11 @@ export class AppComponent implements OnInit {
     ];
 
     this.attractors = [
-      new Attractor({mass: -1, position: new Vector({x: 350, y: 250})}),
+      new Attractor({
+        mass: 10,
+        position: new Vector({x: 350, y: 250}),
+        pulseFrequency: 10
+      }),
     ];
 
     requestAnimationFrame(this.startUpdate);
@@ -39,15 +43,18 @@ export class AppComponent implements OnInit {
 
   startUpdate = () => {
     if (this.counter % this.leaps === 0) {
-      this.updateEmitters();
+      this.update();
     }
 
     this.counter++;
     requestAnimationFrame(this.startUpdate);
   }
 
-  updateEmitters = () => {
-    this.emitters.forEach(e => e.update(3, this.attractors));
+  update() {
+    this.attractors.forEach(a => a.update(this.counter));
+    this.attractors = this.attractors.concat();
+
+    this.emitters.forEach(e => e.update(10, this.attractors));
     this.emitters = this.emitters.concat();
   }
 }

@@ -1,0 +1,17 @@
+.background {
+
+}
+
+.attractor.positive .background {
+  fill: green;
+}
+
+.attractor.negative .background {
+  fill: red;
+}
+
+.event-target {
+  fill: white;
+  fill-opacity: 10e-6;
+  cursor: move;
+}

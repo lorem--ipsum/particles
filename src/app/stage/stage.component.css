@@ -4,7 +4,7 @@
 
 canvas {
   border: 1px solid steelblue;
-  background-color: rgba(35, 39, 41, 1.00);
+  background-color: rgba(35, 39, 41, 0.10);
 }
 
 svg {

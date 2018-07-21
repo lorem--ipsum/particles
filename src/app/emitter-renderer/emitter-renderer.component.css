@@ -1,0 +1,14 @@
+.event-target {
+  fill: white;
+  fill-opacity: 10e-6;
+  cursor: move;
+}
+
+.handle-container {
+  /*cursor: grab;*/
+}
+
+.handle {
+  fill: none;
+  stroke: black;
+}

@@ -1,3 +1,31 @@
-<p>
-  emitter-renderer works!
-</p>
+<svg:g (mouseenter)="onMouseEnter()">
+
+  <svg:path
+    class="output-pipe"
+    [attr.d]="getArc()"
+  />
+
+  <svg:g class="handle-container"  (mousedown)="onHandleDown($event)">
+
+    <svg:path
+      class="handle"
+      [attr.d]="getHandlePath()"
+    />
+
+    <svg:circle
+      [attr.cx]="getKnobPosition().x"
+      [attr.cy]="getKnobPosition().y"
+      [attr.r]="3"
+    />
+  </svg:g>
+
+  <svg:g class="event-target-container" (mousedown)="onMouseDown($event)">
+    <svg:circle
+      class="event-target"
+      [attr.cx]="emitter.position.x"
+      [attr.cy]="emitter.position.y"
+      [attr.r]="20"
+    />
+  </svg:g>
+
+</svg:g>

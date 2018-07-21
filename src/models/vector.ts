@@ -1,10 +1,15 @@
 import nanOr from '../utils/nan-or';
 
+export interface PolarVector {
+  r: number;
+  theta: number;
+}
+
 export class Vector {
   public x: number;
   public y: number;
 
-  static fromPolar(params: {r: number, theta: number}) {
+  static fromPolar(params: PolarVector) {
     const { r, theta } = params;
 
     return new Vector({
@@ -16,6 +21,13 @@ export class Vector {
   constructor(params: any = {}) {
     this.x = nanOr(params.x, 1);
     this.y = nanOr(params.y, 1);
+  }
+
+  toPolar(): PolarVector {
+    return {
+      r: this.getMagnitude(),
+      theta: Math.atan2(this.y, this.x)
+    };
   }
 
   add(other: Vector) {
