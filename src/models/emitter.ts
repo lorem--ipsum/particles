@@ -37,8 +37,6 @@ export class Emitter implements Drawable {
 
   public time = 0;
 
-  // public particles: Particle[];
-
   static fromJS(js: EmitterJS) {
     return new Emitter({
       position: Vector.fromJS(js.position),
@@ -52,7 +50,6 @@ export class Emitter implements Drawable {
 
   constructor(params?: EmitterValue) {
     this.position = params.position || new Vector({x: 0, y: 0});
-    // this.particles = [];
 
     this.angle = new ValueExpression(params.angle);
     this.spread = new ValueExpression(params.spread);
@@ -145,7 +142,5 @@ export class Emitter implements Drawable {
 
     // ctx.arc(this.position.x, this.position.y, this.initialVelocity, 0, Math.PI * 2);
     ctx.stroke();
-
-    // this.particles.forEach(p => p.drawOn(ctx));
   }
 }
