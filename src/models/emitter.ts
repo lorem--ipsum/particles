@@ -1,80 +1,108 @@
 import * as math from 'mathjs';
 
-import { Vector } from './vector';
+import { Vector, VectorJS } from './vector';
 import { Particle } from './particle';
 import { Attractor } from './attractor';
+import { Drawable } from './drawable';
 
-import nanOr from '../utils/nan-or';
+import { ValueExpression } from '../utils/value-expression';
 
-export class Emitter {
+export interface EmitterValue {
+  position?: Vector;
+  angle?: string | number;
+  spread?: string | number;
+  initialVelocity?: string | number;
+  batchSize?: string | number;
+  emissionRate?: string | number;
+}
+
+export interface EmitterJS {
+  position?: VectorJS;
+  angle?: string;
+  spread?: string;
+  initialVelocity?: string;
+  batchSize?: string;
+  emissionRate: string;
+}
+
+export class Emitter implements Drawable {
+
   public position: Vector;
-  private _angleExpression: string;
-  private _spreadExpression: string;
-  private _velocityExpression: string;
 
-  public pouet: string;
+  public angle: ValueExpression;
+  public spread: ValueExpression;
+  public velocity: ValueExpression;
+  public batchSize: ValueExpression;
+  public emissionRate: ValueExpression;
 
   public time = 0;
 
-  public particles: Particle[];
+  // public particles: Particle[];
 
-  constructor(params?: any) {
-    this.position = params.position || new Vector();
-    this.particles = [];
-    this.angleExpression = params.angle;
-    this.spreadExpression = params.spread;
-    this._velocityExpression = params.initialVelocity || '20';
+  static fromJS(js: EmitterJS) {
+    return new Emitter({
+      position: Vector.fromJS(js.position),
+      angle: js.angle,
+      spread: js.spread,
+      initialVelocity: js.initialVelocity,
+      batchSize: js.batchSize,
+      emissionRate: js.emissionRate
+    });
   }
 
-  get angle(): number {
-    return math.parse(this.angleExpression).eval({i: this.time});
+  constructor(params?: EmitterValue) {
+    this.position = params.position || new Vector({x: 0, y: 0});
+    // this.particles = [];
+
+    this.angle = new ValueExpression(params.angle);
+    this.spread = new ValueExpression(params.spread);
+    this.velocity = new ValueExpression(params.initialVelocity || '20');
+    this.batchSize = new ValueExpression(params.batchSize || '10');
+    this.emissionRate = new ValueExpression(params.emissionRate || '1');
   }
 
-  public get angleExpression(): string {
-    return this._angleExpression;
+
+  toJS(): EmitterJS {
+    return {
+      position: this.position.toJS(),
+      angle: this.angle.expression,
+      spread: this.spread.expression,
+      batchSize: this.batchSize.expression,
+      emissionRate: this.emissionRate.expression,
+      initialVelocity: this.velocity.expression,
+    };
   }
 
-  public set angleExpression(v: string) {
-    try {
-      math.parse(v).eval({i: 0});
-      this._angleExpression = v;
-    } catch (e) {}
+  getAngle(): number {
+    return this.angle.eval({t: this.time});
   }
 
-  get spread(): number {
-    return math.parse(this.spreadExpression).eval({i: this.time});
+  getSpread(): number {
+    return this.spread.eval({t: this.time});
   }
 
-  public get spreadExpression(): string {
-    return this._spreadExpression;
+  getBatchSize(): number {
+    return this.batchSize.eval({t: this.time});
   }
 
-  public set spreadExpression(v: string) {
-    try {
-      math.parse(v).eval({i: 0});
-      this._spreadExpression = v;
-    } catch (e) {}
+  getEmissionRate(): number {
+    return this.emissionRate.eval({t: this.time});
   }
 
-  get initialVelocity(): number {
-    return math.parse(this.velocityExpression).eval({i: this.time});
-  }
-
-  public get velocityExpression(): string {
-    return this._velocityExpression;
-  }
-
-  public set velocityExpression(v: string) {
-    try {
-      math.parse(v).eval({i: 0});
-      this._velocityExpression = v;
-    } catch (e) {}
+  getInitialVelocity(): number {
+    return this.velocity.eval({t: this.time});
   }
 
   getNewParticle(index: number, count: number) {
+    const initialVelocity = this.getInitialVelocity();
+    const spread = this.getSpread();
+    const angle = this.getAngle();
+
+    const step = count > 1 ?  (spread / (count - 1)) * index : spread / 2;
+
     const velocity = Vector.fromPolar({
-      r: this.initialVelocity / 20,
-      theta: this.angle - this.spread / 2 + (this.spread / count) * index
+      r: initialVelocity / 20,
+      theta: angle - spread / 2 + step
     });
 
     return new Particle({
@@ -84,28 +112,25 @@ export class Emitter {
   }
 
   getNozzlePosition() {
-    return Vector.fromPolar({r: this.initialVelocity, theta: this.angle});
+    return Vector.fromPolar({r: this.getInitialVelocity(), theta: this.getAngle()});
   }
 
-  update = (time: number, newParticlesCount = 1, attractors: Attractor[] = []) => {
+  update(time: number): Particle[] {
     this.time = time;
 
-    for (let i = 0; i < newParticlesCount; i++) {
-      this.particles.push(this.getNewParticle(i, newParticlesCount));
-    }
+    const rate = this.getEmissionRate();
+
+    if (!rate) return [];
+
+    const batchSize = this.getBatchSize();
 
     const newParticles: Particle[] = [];
 
-    const n = this.particles.length;
-
-    for (let i = 0; i < n; i++) {
-      const p = this.particles[i];
-      if (p.isDead()) continue;
-      newParticles.push(p);
-      p.update(attractors);
+    for (let i = 0; i < batchSize; i++) {
+      newParticles.push(this.getNewParticle(i, batchSize));
     }
 
-    this.particles = newParticles;
+    return newParticles;
   }
 
   drawOn(ctx: CanvasRenderingContext2D) {
@@ -121,6 +146,6 @@ export class Emitter {
     // ctx.arc(this.position.x, this.position.y, this.initialVelocity, 0, Math.PI * 2);
     ctx.stroke();
 
-    this.particles.forEach(p => p.drawOn(ctx));
+    // this.particles.forEach(p => p.drawOn(ctx));
   }
 }

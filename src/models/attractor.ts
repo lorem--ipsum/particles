@@ -1,40 +1,51 @@
 import * as math from 'mathjs';
 
-import { Vector } from './vector';
+import { Vector, VectorJS } from './vector';
 import { Particle } from './particle';
+import { Drawable } from './drawable';
 
-import nanOr from '../utils/nan-or';
+import { ValueExpression } from '../utils/value-expression';
 
 const G = 0.1;
 
-export class Attractor {
+export interface AttractorValue {
+  position?: Vector;
+  mass?: string | number;
+}
+
+export interface AttractorJS {
+  position?: VectorJS;
+  mass?: string;
+}
+
+export class Attractor implements Drawable {
   public position: Vector;
 
-  private _massExpression: string;
-  private _parsedMass: math.MathNode;
+  public mass: ValueExpression;
 
   public time = 0;
 
-  constructor(params: any) {
-    this.position = params.position || new Vector();
-    this.massExpression = params.mass;
+  static fromJS(js: AttractorJS) {
+    return new Attractor({
+      position: Vector.fromJS(js.position),
+      mass: js.mass
+    });
   }
 
-  get mass(): number {
-    return this._parsedMass.eval({i: this.time});
+  constructor(params: AttractorValue) {
+    this.position = params.position || Vector.ORIGIN();
+    this.mass = new ValueExpression(params.mass);
   }
 
-  public get massExpression(): string {
-    return this._massExpression;
+  toJS(): AttractorJS {
+    return {
+      position: this.position.toJS(),
+      mass: this.mass.expression
+    };
   }
 
-  public set massExpression(v: string) {
-    try {
-      const p = math.parse(v);
-      p.eval({i: 0});
-      this._massExpression = v;
-      this._parsedMass = p;
-    } catch (e) {}
+  getMass(): number {
+    return this.mass.eval({t: this.time});
   }
 
   update(index: number) {
@@ -42,6 +53,7 @@ export class Attractor {
   }
 
   getAttractionForce(p: Particle): Vector {
+    const mass = this.getMass();
     const force = this.position
       .copy()
       .subtract(p.position)
@@ -49,12 +61,12 @@ export class Attractor {
 
     const distance = force.getMagnitude();
 
-    if (distance < this.mass) {
+    if (distance < mass) {
       p.kill();
       return new Vector({x: 0, y: 0});
     }
 
-    const strength = (G * this.mass * p.mass) / (distance * distance);
+    const strength = (G * mass * p.mass) / (distance * distance);
 
     return force.normalize().multiply(strength);
   }
@@ -62,7 +74,7 @@ export class Attractor {
   drawOn(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = 'rgba(211, 211, 211, 1.00)';
     ctx.beginPath();
-    // ctx.arc(this.position.x, this.position.y, Math.abs(this._mass), 0, Math.PI * 2);
+    // ctx.arc(this.position.x, this.position.y, Math.abs(this.mass), 0, Math.PI * 2);
     ctx.stroke();
   }
 }

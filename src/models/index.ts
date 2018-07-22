@@ -1,3 +1,4 @@
+export * from './drawable';
 export * from './vector';
 export * from './emitter';
 export * from './particle';

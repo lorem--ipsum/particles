@@ -1,46 +1,60 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { PathLocationStrategy,  Location, LocationStrategy } from '@angular/common';
+import { Component, OnInit, OnDestroy, OnChanges, Input } from '@angular/core';
 
-import { Emitter, Vector, Attractor } from '../models/index';
+import { Emitter, Vector, Attractor, Particle } from '../models/index';
 
 @Component({
+  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit {
-  title = 'app';
+export class AppComponent implements OnInit, OnChanges {
+  location: Location;
+
   emitters: Emitter[] = [];
   attractors: Attractor[] = [];
-  intervalId = undefined;
-  leaps = 2;
+  particles: Particle[] = [];
+
+  leaps = 1;
   counter = 0;
-  zone: NgZone;
 
   selectedEmitter: Emitter;
   selectedAttractor: Attractor;
 
-  constructor(zone: NgZone) {
-    this.zone = zone;
+  constructor(location: Location) {
+    this.location = location;
+  }
+
+  ngOnChanges() {
+    const o = {
+      emitters: this.emitters.map(e => e.toJS()),
+      attractors: this.attractors.map(a => a.toJS()),
+    };
+
+    console.log(JSON.stringify(o))
   }
 
   ngOnInit() {
     this.emitters = [
       new Emitter({
         position: new Vector({x: 150, y: 250}),
-        spread: Math.PI / 2,
-        angle: 0
+        spread: 'pi / 4',
+        angle: 0,
+        emissionRate: 't % 10 == 0',
+        batchSize: 3
       })
     ];
 
     this.attractors = [
       new Attractor({
-        mass: 'sin(i / 20) * 20',
+        mass: 'sin(t / 20) * 20',
         position: new Vector({x: 350, y: 250}),
       })
     ];
 
-    this.selectedAttractor = this.attractors[0];
+    this.selectedEmitter = this.emitters[0];
 
     requestAnimationFrame(this.startUpdate);
   }
@@ -56,10 +70,24 @@ export class AppComponent implements OnInit {
 
   update() {
     this.attractors.forEach(a => a.update(this.counter));
-    this.attractors = this.attractors.concat();
 
-    this.emitters.forEach(e => e.update(this.counter, 10, this.attractors));
-    this.emitters = this.emitters.concat();
+    const newParticles: Particle[] = [];
+
+    this.emitters.forEach(e => newParticles.push(...e.update(this.counter)));
+
+    const n = this.particles.length;
+
+    for (let i = 0; i < n; i++) {
+      const p = this.particles[i];
+
+      if (p.position.x > 500 || p.position.y > 500) continue;
+      if (p.isDead()) continue;
+
+      newParticles.push(p);
+      p.update(this.attractors);
+    }
+
+    this.particles = newParticles;
   }
 
   onAttractorClick(attractor: Attractor) {

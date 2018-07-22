@@ -1,4 +1,4 @@
-<svg:g class="attractor" [ngClass]="{'positive': attractor.mass > 0, 'negative': attractor.mass < 0}">
+<svg:g class="attractor" [ngClass]="{'positive': attractor.getMass() > 0, 'negative': attractor.getMass() < 0}">
 
   <svg:circle
     class="background"

@@ -44,7 +44,7 @@ export class AttractorRendererComponent implements OnInit {
   }
 
   getMass() {
-    return Math.abs(this.attractor.mass);
+    return Math.abs(this.attractor.getMass());
   }
 
 }

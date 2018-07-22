@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnChanges, HostListener } from '@angular/core
 
 import { Emitter, Vector } from '../../models/index';
 import { arc } from '../../utils/svg';
+import { ValueExpression } from '../../utils/value-expression';
 
 const KNOB_PADDING = 10;
 
@@ -21,9 +22,9 @@ export class EmitterRendererComponent implements OnInit, OnChanges {
   }
 
   getHandlePath() {
-    const { position, angle, initialVelocity } = this.emitter;
+    const { position } = this.emitter;
 
-    const end = position.copy().add(Vector.fromPolar({r: initialVelocity + KNOB_PADDING, theta: angle}));
+    const end = position.copy().add(Vector.fromPolar({r: this.emitter.getInitialVelocity() + KNOB_PADDING, theta: this.emitter.getAngle()}));
 
     return [
       'M', position.x, position.y,
@@ -32,13 +33,17 @@ export class EmitterRendererComponent implements OnInit, OnChanges {
   }
 
   getKnobPosition() {
-    const { position, angle, initialVelocity } = this.emitter;
+    const { position } = this.emitter;
 
-    return position.copy().add(Vector.fromPolar({r: initialVelocity + KNOB_PADDING, theta: angle}));
+    return position.copy().add(Vector.fromPolar({r: this.emitter.getInitialVelocity() + KNOB_PADDING, theta: this.emitter.getAngle()}));
   }
 
   getArc() {
-    const { position, spread, angle, initialVelocity } = this.emitter;
+    const { position } = this.emitter;
+    const spread = this.emitter.getSpread();
+    const angle = this.emitter.getAngle();
+    const initialVelocity = this.emitter.getInitialVelocity();
+
     return arc(position, initialVelocity, angle - spread / 2, angle + spread / 2);
   }
 
@@ -64,8 +69,8 @@ export class EmitterRendererComponent implements OnInit, OnChanges {
 
       const { r, theta } = newPoint.subtract(this.emitter.position).toPolar();
 
-      this.emitter.angleExpression = '' + theta;
-      this.emitter.velocityExpression = '' + (r - KNOB_PADDING);
+      this.emitter.angle = new ValueExpression(theta);
+      this.emitter.velocity = new ValueExpression(r - KNOB_PADDING);
     }
   }
 

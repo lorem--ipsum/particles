@@ -1,14 +1,29 @@
 <div class="app">
-  <app-stage
-    [width]="500"
-    [height]="500"
 
-    [emitters]="emitters"
-    [attractors]="attractors"
+  <div class="stage-container">
+    <app-stage
+      [width]="500"
+      [height]="500"
 
-    (attractorClick)="onAttractorClick($event)"
-    (emitterClick)="onEmitterClick($event)">
-  ></app-stage>
+      [drawables]="particles"
+    ></app-stage>
+
+    <svg [attr.width]="500" [attr.height]="500">
+      <g
+        app-emitter-renderer
+        *ngFor="let emitter of emitters"
+        [emitter]="emitter"
+        (click)="onEmitterClick(emitter)"
+      ></g>
+      <g
+        app-attractor-renderer
+        *ngFor="let attractor of attractors"
+        [attractor]="attractor"
+        (click)="onAttractorClick(attractor)"
+      ></g>
+    </svg>
+    <div class="particles-count">{{particles.length}} particles</div>
+  </div>
 
   <app-emitter-detail *ngIf="selectedEmitter" [emitter]="selectedEmitter"></app-emitter-detail>
   <app-attractor-detail *ngIf="selectedAttractor" [attractor]="selectedAttractor"></app-attractor-detail>
