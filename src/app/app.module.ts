@@ -1,4 +1,4 @@
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { AttractorRendererComponent } from './attractor-renderer/attractor-rende
 import { AttractorDetailComponent } from './attractor-detail/attractor-detail.component';
 import { EmitterDetailComponent } from './emitter-detail/emitter-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StateSaverComponent } from './state-saver/state-saver.component';
 
 @NgModule({
   declarations: [
@@ -20,14 +21,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AttractorRendererComponent,
     AttractorDetailComponent,
     EmitterDetailComponent,
-    MathValidatorDirective
+    MathValidatorDirective,
+    StateSaverComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

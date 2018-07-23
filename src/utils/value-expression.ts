@@ -3,6 +3,7 @@ import * as math from 'mathjs';
 export class ValueExpression {
   private _expression: any;
   private _parsedExpression: math.MathNode;
+  private _value = 0;
 
   constructor(expression: any) {
     this.expression = expression;
@@ -23,6 +24,14 @@ export class ValueExpression {
   }
 
   eval(scope: any): number {
-    return this._parsedExpression.eval(scope);
+    return this._parsedExpression ? this._parsedExpression.eval(scope) : 0;
+  }
+
+  update(scope: any) {
+    this._value = this.eval(scope);
+  }
+
+  get value(): number {
+    return this._value;
   }
 }

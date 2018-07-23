@@ -4,6 +4,7 @@ import { Vector, VectorJS } from './vector';
 import { Particle } from './particle';
 import { Attractor } from './attractor';
 import { Drawable } from './drawable';
+import { Diffable } from './diffable';
 
 import { ValueExpression } from '../utils/value-expression';
 
@@ -25,7 +26,7 @@ export interface EmitterJS {
   emissionRate: string;
 }
 
-export class Emitter implements Drawable {
+export class Emitter implements Drawable, Diffable {
 
   public position: Vector;
 
@@ -46,6 +47,10 @@ export class Emitter implements Drawable {
       batchSize: js.batchSize,
       emissionRate: js.emissionRate
     });
+  }
+
+  identify() {
+    return JSON.stringify(this.toJS());
   }
 
   constructor(params?: EmitterValue) {
@@ -71,23 +76,23 @@ export class Emitter implements Drawable {
   }
 
   getAngle(): number {
-    return this.angle.eval({t: this.time});
+    return this.angle.value;
   }
 
   getSpread(): number {
-    return this.spread.eval({t: this.time});
+    return this.spread.value;
   }
 
   getBatchSize(): number {
-    return this.batchSize.eval({t: this.time});
+    return this.batchSize.value;
   }
 
   getEmissionRate(): number {
-    return this.emissionRate.eval({t: this.time});
+    return this.emissionRate.value;
   }
 
   getInitialVelocity(): number {
-    return this.velocity.eval({t: this.time});
+    return this.velocity.value;
   }
 
   getNewParticle(index: number, count: number) {
@@ -99,7 +104,7 @@ export class Emitter implements Drawable {
 
     const velocity = Vector.fromPolar({
       r: initialVelocity / 20,
-      theta: angle - spread / 2 + step
+      theta: angle - spread * .5 + step
     });
 
     return new Particle({
@@ -113,6 +118,12 @@ export class Emitter implements Drawable {
   }
 
   update(time: number): Particle[] {
+    this.angle.update({t: time});
+    this.spread.update({t: time});
+    this.velocity.update({t: time});
+    this.batchSize.update({t: time});
+    this.emissionRate.update({t: time});
+
     this.time = time;
 
     const rate = this.getEmissionRate();

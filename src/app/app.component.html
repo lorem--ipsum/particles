@@ -14,17 +14,39 @@
         *ngFor="let emitter of emitters"
         [emitter]="emitter"
         (click)="onEmitterClick(emitter)"
+        [selected]="emitter === selectedEmitter"
       ></g>
       <g
         app-attractor-renderer
         *ngFor="let attractor of attractors"
         [attractor]="attractor"
         (click)="onAttractorClick(attractor)"
+        [selected]="attractor === selectedAttractor"
       ></g>
     </svg>
-    <div class="particles-count">{{particles.length}} particles</div>
+
+    <div class="controls right">
+      <!-- <div class="info">{{particles.length}} particles, {{fps}} fps</div> -->
+      <button mat-button (click)="addEmitter()">Add emitter</button>
+      <button mat-button (click)="addAttractor()">Add attractor</button>
+      <button mat-button (click)="reset()">Reset</button>
+    </div>
+
   </div>
 
-  <app-emitter-detail *ngIf="selectedEmitter" [emitter]="selectedEmitter"></app-emitter-detail>
-  <app-attractor-detail *ngIf="selectedAttractor" [attractor]="selectedAttractor"></app-attractor-detail>
+  <app-emitter-detail
+    *ngIf="selectedEmitter"
+    (remove)="removeEmitter($event)"
+    (duplicate)="duplicateEmitter($event)"
+    [emitter]="selectedEmitter"
+  ></app-emitter-detail>
+
+  <app-attractor-detail
+    *ngIf="selectedAttractor"
+    (remove)="removeAttractor($event)"
+    (duplicate)="duplicateAttractor($event)"
+    [attractor]="selectedAttractor"
+  ></app-attractor-detail>
+
+  <app-state-saver [attractors]="attractors" [emitters]="emitters"></app-state-saver>
 </div>

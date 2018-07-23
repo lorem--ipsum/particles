@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Attractor } from '../../models/index';
 
 @Component({
@@ -7,12 +7,8 @@ import { Attractor } from '../../models/index';
   styleUrls: ['./attractor-detail.component.css']
 })
 
-export class AttractorDetailComponent implements OnInit {
+export class AttractorDetailComponent {
   @Input() attractor: Attractor;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  @Output() remove = new EventEmitter<Attractor>();
+  @Output() duplicate = new EventEmitter<Attractor>();
 }

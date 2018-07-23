@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, OnChanges, HostListener } from '@angular/core';
 
 import { Emitter, Vector } from '../../models/index';
 import { arc } from '../../utils/svg';
@@ -9,11 +9,12 @@ const KNOB_PADDING = 10;
 @Component({
   selector: '[app-emitter-renderer]',
   templateUrl: './emitter-renderer.component.html',
-  styleUrls: ['./emitter-renderer.component.css']
+  styleUrls: ['./emitter-renderer.component.scss']
 })
 export class EmitterRendererComponent implements OnInit, OnChanges {
 
   @Input() emitter: Emitter;
+  @Input() selected: boolean;
 
   positionStartingPoint: Vector;
   angleStartingPoint: Vector;
@@ -24,7 +25,9 @@ export class EmitterRendererComponent implements OnInit, OnChanges {
   getHandlePath() {
     const { position } = this.emitter;
 
-    const end = position.copy().add(Vector.fromPolar({r: this.emitter.getInitialVelocity() + KNOB_PADDING, theta: this.emitter.getAngle()}));
+    const end = position.copy().add(
+      Vector.fromPolar({r: this.emitter.getInitialVelocity() + KNOB_PADDING, theta: this.emitter.getAngle()})
+    );
 
     return [
       'M', position.x, position.y,

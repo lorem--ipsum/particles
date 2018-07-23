@@ -17,10 +17,13 @@
     <div>
       <mat-form-field>
         <mat-label>mass</mat-label>
-        <input name="mass" [errorStateMatcher]="matcher" matInput [(ngModel)]="attractor.mass.expression" mathValidator="t"/>
+        <input name="mass" matInput [(ngModel)]="attractor.mass.expression" mathValidator="t"/>
       </mat-form-field>
     </div>
 
   </form>
+
+  <button mat-stroked-button color="warn" (click)="remove.emit(attractor)">remove</button>
+  <button mat-stroked-button color="primary" (click)="duplicate.emit(attractor)">duplicate</button>
 
 </div>

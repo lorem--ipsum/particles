@@ -21,6 +21,7 @@
 
   <svg:g class="event-target-container" (mousedown)="onMouseDown($event)">
     <svg:circle
+      [ngClass]="{'selected': selected}"
       class="event-target"
       [attr.cx]="emitter.position.x"
       [attr.cy]="emitter.position.y"

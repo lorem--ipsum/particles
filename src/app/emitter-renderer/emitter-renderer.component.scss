@@ -2,6 +2,11 @@
   fill: white;
   fill-opacity: 10e-6;
   cursor: move;
+
+  &.selected {
+    stroke: steelblue;
+    stroke-dasharray: 1 1;
+  }
 }
 
 .handle-container {

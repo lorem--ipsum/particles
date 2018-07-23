@@ -3,6 +3,7 @@ import * as math from 'mathjs';
 import { Vector, VectorJS } from './vector';
 import { Particle } from './particle';
 import { Drawable } from './drawable';
+import { Diffable } from './diffable';
 
 import { ValueExpression } from '../utils/value-expression';
 
@@ -18,7 +19,7 @@ export interface AttractorJS {
   mass?: string;
 }
 
-export class Attractor implements Drawable {
+export class Attractor implements Drawable, Diffable {
   public position: Vector;
 
   public mass: ValueExpression;
@@ -37,6 +38,10 @@ export class Attractor implements Drawable {
     this.mass = new ValueExpression(params.mass);
   }
 
+  identify() {
+    return JSON.stringify(this.toJS());
+  }
+
   toJS(): AttractorJS {
     return {
       position: this.position.toJS(),
@@ -45,36 +50,40 @@ export class Attractor implements Drawable {
   }
 
   getMass(): number {
-    return this.mass.eval({t: this.time});
+    return this.mass.value;
   }
 
   update(index: number) {
     this.time = index;
+    this.mass.update({t: this.time});
   }
 
-  getAttractionForce(p: Particle): Vector {
+  getAttractionForce(p: Particle): {x: number, y: number} {
     const mass = this.getMass();
-    const force = this.position
-      .copy()
-      .subtract(p.position)
-      ;
 
-    const distance = force.getMagnitude();
+    let x = this.position.x - p.position.x;
+    let y = this.position.y - p.position.y;
 
-    if (distance < mass) {
+    const squaredMag = x * x + y * y;
+    const mag = Math.sqrt(squaredMag);
+
+    if (mag < mass) {
       p.kill();
-      return new Vector({x: 0, y: 0});
+      return {x: 0, y: 0};
     }
 
-    const strength = (G * mass * p.mass) / (distance * distance);
+    const strength = (G * mass * p.mass) / squaredMag;
 
-    return force.normalize().multiply(strength);
+    x = strength * x / mag;
+    y = strength * y / mag;
+
+    return {x, y};
   }
 
   drawOn(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = 'rgba(211, 211, 211, 1.00)';
-    ctx.beginPath();
+    // ctx.strokeStyle = 'rgba(211, 211, 211, 1.00)';
+    // ctx.beginPath();
     // ctx.arc(this.position.x, this.position.y, Math.abs(this.mass), 0, Math.PI * 2);
-    ctx.stroke();
+    // ctx.stroke();
   }
 }

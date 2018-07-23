@@ -17,12 +17,12 @@
     <div>
       <mat-form-field>
         <mat-label>angle</mat-label>
-        <input name="angleExpression" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.angle.expression" mathValidator="t"/>
+        <input name="angleExpression" matInput [(ngModel)]="emitter.angle.expression" mathValidator="t"/>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>spread</mat-label>
-        <input name="spread" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.spread.expression" mathValidator="t"/>
+        <input name="spread" matInput [(ngModel)]="emitter.spread.expression" mathValidator="t"/>
       </mat-form-field>
     </div>
 
@@ -30,22 +30,25 @@
     <div>
       <mat-form-field>
         <mat-label>particles' initial velocity</mat-label>
-        <input name="velocity" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.velocity.expression" mathValidator="t"/>
+        <input name="velocity" matInput [(ngModel)]="emitter.velocity.expression" mathValidator="t"/>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>batch size</mat-label>
-        <input name="batchSize" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.batchSize.expression" mathValidator="t"/>
+        <input name="batchSize" matInput [(ngModel)]="emitter.batchSize.expression" mathValidator="t"/>
       </mat-form-field>
     </div>
 
     <div>
       <mat-form-field>
         <mat-label>emission rate ({{emitter.getEmissionRate()}})</mat-label>
-        <input name="emissionRate" [errorStateMatcher]="matcher" matInput [(ngModel)]="emitter.emissionRate.expression" mathValidator="t"/>
+        <input name="emissionRate" matInput [(ngModel)]="emitter.emissionRate.expression" mathValidator="t"/>
       </mat-form-field>
     </div>
 
   </form>
+
+  <button mat-stroked-button color="warn" (click)="remove.emit(emitter)">remove</button>
+  <button mat-stroked-button color="primary" (click)="duplicate.emit(emitter)">duplicate</button>
 
 </div>

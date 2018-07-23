@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 
 import { Emitter } from '../../models/index';
 
@@ -7,16 +7,8 @@ import { Emitter } from '../../models/index';
   templateUrl: './emitter-detail.component.html',
   styleUrls: ['./emitter-detail.component.css']
 })
-export class EmitterDetailComponent implements OnInit, OnChanges {
-
+export class EmitterDetailComponent {
   @Input() emitter: Emitter;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  ngOnChanges() {
-  }
-
+  @Output() remove = new EventEmitter<Emitter>();
+  @Output() duplicate = new EventEmitter<Emitter>();
 }

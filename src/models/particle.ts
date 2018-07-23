@@ -24,12 +24,19 @@ export class Particle implements Drawable {
 
   update(attractors: Attractor[] = []) {
     this.lifeSpan = this.lifeSpan - 1;
-    this.position.add(this.velocity);
-    this.velocity.add(this.acceleration);
 
-    attractors.forEach(attractor => {
-      this.acceleration.add(attractor.getAttractionForce(this));
-    });
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    this.velocity.x += this.acceleration.x;
+    this.velocity.y += this.acceleration.y;
+
+    let i = attractors.length;
+    while (i--) {
+      const f = attractors[i].getAttractionForce(this);
+      this.acceleration.x += f.x;
+      this.acceleration.y += f.y;
+    }
   }
 
   kill() {

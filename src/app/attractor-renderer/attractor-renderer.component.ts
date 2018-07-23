@@ -5,11 +5,12 @@ import { Attractor, Vector } from '../../models/index';
 @Component({
   selector: '[app-attractor-renderer]',
   templateUrl: './attractor-renderer.component.html',
-  styleUrls: ['./attractor-renderer.component.css']
+  styleUrls: ['./attractor-renderer.component.scss']
 })
 export class AttractorRendererComponent implements OnInit {
 
   @Input() attractor: Attractor;
+  @Input() selected: boolean;
 
   positionStartingPoint: Vector;
 
