@@ -16,6 +16,7 @@ export class ValueExpression {
       this._expression = value;
       this._parsedExpression = p;
     } catch (e) {
+      console.log(e)
     }
   }
 

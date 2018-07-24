@@ -4,7 +4,7 @@ import { Attractor } from '../../models/index';
 @Component({
   selector: 'app-attractor-detail',
   templateUrl: './attractor-detail.component.html',
-  styleUrls: ['./attractor-detail.component.css']
+  styleUrls: ['./attractor-detail.component.scss']
 })
 
 export class AttractorDetailComponent {

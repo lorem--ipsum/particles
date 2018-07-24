@@ -4,17 +4,20 @@
   <form class="example-form" >
     <h2>Attractor</h2>
 
-    <mat-form-field>
-      <mat-label>x</mat-label>
-      <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.x"/>
-    </mat-form-field>
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>x</mat-label>
+        <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.x"/>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>y</mat-label>
-      <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.y"/>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>y</mat-label>
+        <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="attractor.position.y"/>
+      </mat-form-field>
+    </div>
 
-    <div>
+
+    <div class="form-row">
       <mat-form-field>
         <mat-label>mass</mat-label>
         <input name="mass" matInput [(ngModel)]="attractor.mass.expression" mathValidator="t"/>
@@ -23,7 +26,9 @@
 
   </form>
 
-  <button mat-stroked-button color="warn" (click)="remove.emit(attractor)">remove</button>
-  <button mat-stroked-button color="primary" (click)="duplicate.emit(attractor)">duplicate</button>
+  <div class="controls right">
+    <button mat-button color="primary" (click)="duplicate.emit(attractor)">Duplicate</button>
+    <button mat-button color="warn" (click)="remove.emit(attractor)">Remove</button>
+  </div>
 
 </div>

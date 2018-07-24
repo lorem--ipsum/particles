@@ -4,17 +4,19 @@
   <form class="example-form" >
     <h2>Emitter</h2>
 
-    <mat-form-field>
-      <mat-label>x</mat-label>
-      <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.x"/>
-    </mat-form-field>
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>x</mat-label>
+        <input name="x" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.x"/>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>y</mat-label>
-      <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.y"/>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>y</mat-label>
+        <input name="y" matInput type="number" step="1" min="0" [(ngModel)]="emitter.position.y"/>
+      </mat-form-field>
+    </div>
 
-    <div>
+    <div class="form-row">
       <mat-form-field>
         <mat-label>angle</mat-label>
         <input name="angleExpression" matInput [(ngModel)]="emitter.angle.expression" mathValidator="t"/>
@@ -27,7 +29,7 @@
     </div>
 
 
-    <div>
+    <div class="form-row">
       <mat-form-field>
         <mat-label>particles' initial velocity</mat-label>
         <input name="velocity" matInput [(ngModel)]="emitter.velocity.expression" mathValidator="t"/>
@@ -39,16 +41,23 @@
       </mat-form-field>
     </div>
 
-    <div>
+    <div class="form-row">
       <mat-form-field>
-        <mat-label>emission rate ({{emitter.getEmissionRate()}})</mat-label>
+        <mat-label>emission rate (true or false)</mat-label>
         <input name="emissionRate" matInput [(ngModel)]="emitter.emissionRate.expression" mathValidator="t"/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>particles' color (H, S, L)</mat-label>
+        <input name="color" matInput [(ngModel)]="emitter.color.expression" mathValidator="t"/>
       </mat-form-field>
     </div>
 
   </form>
 
-  <button mat-stroked-button color="warn" (click)="remove.emit(emitter)">remove</button>
-  <button mat-stroked-button color="primary" (click)="duplicate.emit(emitter)">duplicate</button>
+  <div class="controls right">
+    <button mat-button color="primary" (click)="duplicate.emit(emitter)">Duplicate</button>
+    <button mat-button color="warn" (click)="remove.emit(emitter)">Remove</button>
+  </div>
 
 </div>

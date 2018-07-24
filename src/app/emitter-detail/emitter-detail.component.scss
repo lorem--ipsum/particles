@@ -1,0 +1,16 @@
+.emitter-detail {
+  position: absolute;
+  top: 0;
+  right: -10px;
+  transform: translate(100%, 0);
+}
+
+.controls.right {
+  text-align: right;
+}
+
+.form-row {
+  > :not(:last-child) {
+    margin-right: 20px;
+  }
+}

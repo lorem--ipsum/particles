@@ -58,7 +58,8 @@ export class Particle implements Drawable {
   drawOn(ctx: CanvasRenderingContext2D) {
     const position = this.position;
 
-    ctx.fillStyle = `rgb(${this.color.join(',')}, ${this.getOpacity()})`;
+    const color = this.color;
+    ctx.fillStyle = `hsla(${color[0]}, ${color[1]}%, ${color[2]}%, ${this.getOpacity()})`;
     ctx.beginPath();
     ctx.fillRect(position.x - 1, position.y - 1, 2, 2);
     // ctx.arc(position.getX(), position.getY(), this.getMass(), 0, Math.PI * 2);

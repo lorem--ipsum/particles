@@ -54,7 +54,7 @@ export class StateSaverComponent implements DoCheck {
       emitters: this._emitters.map(a => a.toJS())
     });
 
-    this._location.go(btoa(string));
+    location.hash = btoa(string);
   }
 
 }

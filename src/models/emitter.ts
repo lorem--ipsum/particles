@@ -1,5 +1,3 @@
-import * as math from 'mathjs';
-
 import { Vector, VectorJS } from './vector';
 import { Particle } from './particle';
 import { Attractor } from './attractor';
@@ -15,6 +13,7 @@ export interface EmitterValue {
   initialVelocity?: string | number;
   batchSize?: string | number;
   emissionRate?: string | number;
+  color?: string | number;
 }
 
 export interface EmitterJS {
@@ -23,7 +22,8 @@ export interface EmitterJS {
   spread?: string;
   initialVelocity?: string;
   batchSize?: string;
-  emissionRate: string;
+  emissionRate?: string;
+  color?: string;
 }
 
 export class Emitter implements Drawable, Diffable {
@@ -35,6 +35,7 @@ export class Emitter implements Drawable, Diffable {
   public velocity: ValueExpression;
   public batchSize: ValueExpression;
   public emissionRate: ValueExpression;
+  public color: ValueExpression;
 
   public time = 0;
 
@@ -45,7 +46,8 @@ export class Emitter implements Drawable, Diffable {
       spread: js.spread,
       initialVelocity: js.initialVelocity,
       batchSize: js.batchSize,
-      emissionRate: js.emissionRate
+      emissionRate: js.emissionRate,
+      color: js.color
     });
   }
 
@@ -61,6 +63,7 @@ export class Emitter implements Drawable, Diffable {
     this.velocity = new ValueExpression(params.initialVelocity || '20');
     this.batchSize = new ValueExpression(params.batchSize || '10');
     this.emissionRate = new ValueExpression(params.emissionRate || '1');
+    this.color = new ValueExpression(params.color || '[255, 90, 70]');
   }
 
 
@@ -70,6 +73,7 @@ export class Emitter implements Drawable, Diffable {
       angle: this.angle.expression,
       spread: this.spread.expression,
       batchSize: this.batchSize.expression,
+      color: this.color.expression,
       emissionRate: this.emissionRate.expression,
       initialVelocity: this.velocity.expression,
     };
@@ -81,6 +85,12 @@ export class Emitter implements Drawable, Diffable {
 
   getSpread(): number {
     return this.spread.value;
+  }
+
+  getColor(): number {
+    const c = this.color.value;
+
+    return (c as any).toArray();
   }
 
   getBatchSize(): number {
@@ -99,6 +109,7 @@ export class Emitter implements Drawable, Diffable {
     const initialVelocity = this.getInitialVelocity();
     const spread = this.getSpread();
     const angle = this.getAngle();
+    const color = this.getColor();
 
     const step = count > 1 ?  (spread / (count - 1)) * index : spread / 2;
 
@@ -109,7 +120,8 @@ export class Emitter implements Drawable, Diffable {
 
     return new Particle({
       position: this.position.copy(),
-      velocity
+      velocity,
+      color
     });
   }
 
@@ -123,6 +135,7 @@ export class Emitter implements Drawable, Diffable {
     this.velocity.update({t: time});
     this.batchSize.update({t: time});
     this.emissionRate.update({t: time});
+    this.color.update({t: time});
 
     this.time = time;
 

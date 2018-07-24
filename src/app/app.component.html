@@ -8,7 +8,7 @@
       [drawables]="particles"
     ></app-stage>
 
-    <svg [attr.width]="500" [attr.height]="500">
+    <svg [attr.width]="500" [attr.height]="500" *ngIf="showStuff">
       <g
         app-emitter-renderer
         *ngFor="let emitter of emitters"
@@ -25,12 +25,17 @@
       ></g>
     </svg>
 
+    <div *ngIf="showStuff" class="info">{{particles.length}} particles, {{fps}} fps</div>
+
     <div class="controls right">
-      <!-- <div class="info">{{particles.length}} particles, {{fps}} fps</div> -->
-      <button mat-button (click)="addEmitter()">Add emitter</button>
-      <button mat-button (click)="addAttractor()">Add attractor</button>
-      <button mat-button (click)="reset()">Reset</button>
+      <button mat-button color="primary" (click)="addEmitter()">Add emitter</button>
+      <button mat-button color="primary" (click)="addAttractor()">Add attractor</button>
+      <button mat-button color="warn" (click)="reset()">Reset</button>
     </div>
+    <div class="controls right">
+      <!-- <mat-checkbox labelPosition="before" color="primary" (change)="showStuff = !showStuff" [checked]="showStuff">Show emitters and attractors</mat-checkbox> -->
+    </div>
+
 
   </div>
 

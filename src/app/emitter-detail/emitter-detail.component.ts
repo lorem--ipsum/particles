@@ -5,7 +5,7 @@ import { Emitter } from '../../models/index';
 @Component({
   selector: 'app-emitter-detail',
   templateUrl: './emitter-detail.component.html',
-  styleUrls: ['./emitter-detail.component.css']
+  styleUrls: ['./emitter-detail.component.scss']
 })
 export class EmitterDetailComponent {
   @Input() emitter: Emitter;

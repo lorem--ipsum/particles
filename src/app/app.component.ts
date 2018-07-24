@@ -25,6 +25,8 @@ export class AppComponent implements OnInit {
   now: number;
   fps = 0;
 
+  showStuff = true;
+
   constructor(private _location: Location) {}
 
   addEmitter() {
@@ -78,14 +80,16 @@ export class AppComponent implements OnInit {
           spread: 'pi / 4',
           angle: 0,
           emissionRate: 't % 2 == 0',
-          batchSize: 4
+          batchSize: 6,
+          color: '[sin(t / 100)*255, 80, 70]'
         }),
         new Emitter({
           position: new Vector({x: 450, y: 250}),
           spread: 'pi / 4',
           angle: 'pi',
           emissionRate: 't % 2 == 0',
-          batchSize: 4
+          batchSize: 6,
+          color: '[sin(t / 100)*255, 80, 70]'
         })
       ],
       attractors: [
@@ -149,12 +153,21 @@ export class AppComponent implements OnInit {
   }
 
   onAttractorClick(attractor: Attractor) {
-    this.selectedAttractor = attractor;
+    if (this.selectedAttractor === attractor) {
+      this.selectedAttractor = undefined;
+    } else {
+      this.selectedAttractor = attractor;
+    }
+
     this.selectedEmitter = undefined;
   }
 
   onEmitterClick(emitter: Emitter) {
-    this.selectedEmitter = emitter;
+    if (this.selectedEmitter === emitter) {
+      this.selectedEmitter = undefined;
+    } else {
+      this.selectedEmitter = emitter;
+    }
     this.selectedAttractor = undefined;
   }
 }
